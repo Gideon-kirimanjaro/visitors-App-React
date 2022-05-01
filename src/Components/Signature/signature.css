@@ -1,0 +1,7 @@
+#pad {
+  height: 25%;
+}
+.sigCanvas {
+  border: 1px solid purple;
+  padding: 5px;
+}
