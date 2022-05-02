@@ -1,8 +1,16 @@
 .App {
   display: flex;
   justify-content: center;
+  font-family: Merriweather;
 }
-
+#main {
+  font-family: 🇲erriweather;
+}
+#header {
+  font-family: 🇲erriweather;
+  src: local("Merriweather"), url("./Fonts/Merriweather-Bold.ttf"),
+    format("truetype");
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -36,4 +44,9 @@
   to {
     transform: rotate(360deg);
   }
+}
+@font-face {
+  font-family: Merriweather;
+  src: local("Merriweather"), url("./Fonts/Merriweather-Bold.ttf"),
+    format("truetype");
 }

@@ -9,6 +9,7 @@ import Data from "./Data";
 import axios from "axios";
 import "./App.css";
 import { useState } from "react";
+import SearchFunction from "./Components/SearchFunction";
 function App() {
   //------------------------STATE---------------
   const [formValues, setFormValues] = useState({ clientName: "", purpose: "" });
@@ -93,13 +94,16 @@ function App() {
     }
   };
   return (
-    <div className="justify-content-center">
+    <div id="main" className="d-md-flex justify-content-center px-5 ">
       <Row className="">
-        <h4 className="d-flex justify-content-center mt-3 text-success">
+        <h4
+          id="header"
+          className="d-flex justify-content-center mt-3 text-success"
+        >
           <u>LIMURU SUB-COUNTY VISITORS APP</u>
         </h4>
-        <div className="d-md-flex mx-4 flex-row justify-content-around">
-          <div className="px-5">
+        <div className="d-md-flex mx-2  justify-content-around">
+          <div className="px-sm-5">
             <Form>
               <Form.Group className="mb-3">
                 <Form.Label>
@@ -174,9 +178,11 @@ function App() {
           </div>
         </div>
       </Row>
-      <div className="d-flex justify-content-center">
-        {" "}
-        <Data />
+      <div className="mt-3">
+        <div className="d-flex justify-content-center mt-3"></div>
+        <div className="d-flex justify-content-center">
+          <Data />
+        </div>
       </div>
     </div>
   );
