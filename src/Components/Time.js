@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import TimePicker from "react-time-picker";
 import DateTime from "./Ui/DateTime";
@@ -11,7 +12,11 @@ const Time = (props) => {
       <DateTime>
         <DateTime.Title>Time In</DateTime.Title>
         <DateTime.Body>
-          <TimePicker onChange={timeHandler} value={value} />
+          <TimePicker
+            amPmAriaLabel="Select AM/PM"
+            onChange={timeHandler}
+            value={value}
+          />
         </DateTime.Body>
       </DateTime>
     </div>

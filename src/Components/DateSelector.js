@@ -4,8 +4,9 @@ import DatePicker from "react-date-picker";
 import DateTime from "./Ui/DateTime";
 
 const DateSelector = (props) => {
-  const [date, onChange] = useState([new Date().toString()]);
+  const [date, setSelectedDate] = useState([new Date().toString()]);
   const dateHandler = (date) => {
+    setSelectedDate(date);
     props.onDateChange(date);
   };
   return (
@@ -15,8 +16,10 @@ const DateSelector = (props) => {
         <DateTime.Body>
           <DatePicker
             minDate={new Date()}
+            maxDate={new Date()}
             onChange={dateHandler}
             value={date}
+            format="dd-MM-y"
           />
         </DateTime.Body>
       </DateTime>

@@ -9,6 +9,7 @@ import Data from "./Data";
 import axios from "axios";
 import "./App.css";
 import { useState } from "react";
+// eslint-disable-next-line no-unused-vars
 import SearchFunction from "./Components/SearchFunction";
 function App() {
   //------------------------STATE---------------
@@ -19,7 +20,10 @@ function App() {
   const [purposeErrors, setPurposeErrors] = useState(false);
   const [validateTime, setValidateTime] = useState(false);
   const [validateDate, setValidateDate] = useState(false);
-  const [successForm, setSuccessForm] = useState(true);
+  const [successForm, setSuccessForm] = useState(false);
+  const [signClear, setSignClear] = useState();
+  const [passedData, setPassedData] = useState(0);
+
   const endPoint =
     "https://limuru-visitors-app-default-rtdb.firebaseio.com/visitors/.json";
 
@@ -52,13 +56,16 @@ function App() {
   };
   const timeChangeHandler = (enteredTime) => {
     setTime(enteredTime);
+    console.log("Entered Time", enteredTime);
   };
   const dateChangeHandler = (enteredDate) => {
     const year = enteredDate.getFullYear();
-    const month = enteredDate.getMonth();
-    const day = enteredDate.getDate();
+    const month = enteredDate.getUTCMonth() + 1;
+    const day = enteredDate.getUTCDate();
     setDate(`${day}/${month}/${year}`);
+    console.log("The date", enteredDate);
   };
+
   const submitForm = (e) => {
     e.preventDefault();
     validate(formValues);
@@ -74,6 +81,8 @@ function App() {
       date !== undefined &&
       time !== undefined
     ) {
+      setFormErrors(false);
+      setPurposeErrors(false);
       axios
         .post(endPoint, submitData)
         .then(setFormValues({ clientName: "", purpose: "" }))
@@ -81,109 +90,122 @@ function App() {
         .then((res) => {
           console.log(res.data);
         })
+        .then(setPassedData(1))
+        .then(setValidateDate(false), setValidateTime(false), setPassedData(0))
+        //.then(setPassedData(true))
         .catch((Error) => {
           console.log(Error);
         });
     } else if (date === undefined) {
       setValidateDate(true);
-    } else if (time === undefined || time === "") {
+    } else if (time === undefined || time === "" || time === null) {
       setValidateTime(true);
     } else {
-      setValidateDate(false);
-      setValidateTime(false);
     }
   };
+
   return (
-    <div id="main" className="d-md-flex justify-content-center px-5 ">
-      <Row className="">
-        <h4
-          id="header"
-          className="d-flex justify-content-center mt-3 text-success"
-        >
-          <u>LIMURU SUB-COUNTY VISITORS APP</u>
-        </h4>
-        <div className="d-md-flex mx-2  justify-content-around">
-          <div className="px-sm-5">
-            <Form>
-              <Form.Group className="mb-3">
-                <Form.Label>
-                  <h5>Name</h5>
-                </Form.Label>
-                <Form.Control
-                  style={{
-                    borderColor: formErrors ? "red" : "green",
-                    background: formErrors ? "#FFA07A" : "transparent",
-                  }}
-                  required
-                  onChange={clientNameHandler}
-                  value={formValues.clientName}
-                  type="text"
-                  placeholder="Enter Name"
-                />
+    <div className="div1">
+      <div id="main" className="d-md-flex justify-content-center px-5 ">
+        <Row className="">
+          <h5
+            id="header"
+            className="d-flex justify-content-center mt-3 text-success"
+          >
+            <u>LIMURU SUB-COUNTY VISITORS APP v 1.0</u>
+          </h5>
+          <div className="d-md-flex mx-2  justify-content-around">
+            <div className="px-sm-5">
+              <Form>
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    <h5>Name</h5>
+                  </Form.Label>
+                  <Form.Control
+                    style={{
+                      borderColor: formErrors ? "red" : "green",
+                      background: formErrors ? "#FFA07A" : "transparent",
+                    }}
+                    required
+                    onChange={clientNameHandler}
+                    value={formValues.clientName}
+                    type="text"
+                    placeholder="Enter Name"
+                  />
+                  <span>
+                    {formErrors && (
+                      <h5 className="text-danger bolder">Fill your name!</h5>
+                    )}
+                  </span>
+                </Form.Group>
+                <Time onTimeChange={timeChangeHandler}></Time>
                 <span>
-                  {formErrors && (
-                    <h5 className="text-danger bolder">Fill your name!</h5>
+                  {validateTime && (
+                    <h5 className="text-danger bolder">select the time!</h5>
                   )}
                 </span>
-              </Form.Group>
-              <Time onTimeChange={timeChangeHandler}></Time>
-              <span>
-                {validateTime && (
-                  <h5 className="text-danger bolder">select the time!</h5>
-                )}
-              </span>
-              <DateSelector onDateChange={dateChangeHandler}></DateSelector>
-              <span>
-                {validateDate && (
-                  <h5 className="text-danger bolder">set the date!</h5>
-                )}
-              </span>
-              <Form.Group className="mb-3">
-                <Form.Label>
-                  <h5>Purpose of visit</h5>
-                </Form.Label>
-                <Form.Control
-                  style={{
-                    borderColor: purposeErrors ? "red" : "green",
-                    background: purposeErrors ? "#FFA07A" : "transparent",
-                  }}
-                  required
-                  onChange={clientPurposeHandler}
-                  value={formValues.purpose}
-                  type="text"
-                  placeholder="Purpose of visit"
-                />
+                <DateSelector onDateChange={dateChangeHandler}></DateSelector>
                 <span>
-                  {purposeErrors ? (
-                    <h5 className="text-danger">
-                      Fill the purpose of your visit!
+                  {validateDate && (
+                    <h5 className="text-danger bolder">set the date!</h5>
+                  )}
+                </span>
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    <h5>Purpose of visit</h5>
+                  </Form.Label>
+                  <Form.Control
+                    style={{
+                      borderColor: purposeErrors ? "red" : "green",
+                      background: purposeErrors ? "#FFA07A" : "transparent",
+                    }}
+                    required
+                    onChange={clientPurposeHandler}
+                    value={formValues.purpose}
+                    type="text"
+                    placeholder="Purpose of visit"
+                  />
+                  <span>
+                    {purposeErrors ? (
+                      <h5 className="text-danger">
+                        Fill the purpose of your visit!
+                      </h5>
+                    ) : null}
+                  </span>
+                </Form.Group>
+                <Signature passedData={passedData} />
+                <div className="d-flex justify-content-center">
+                  {successForm ? (
+                    <h5 className="text-success">
+                      visitation captured successfully!
                     </h5>
                   ) : null}
-                </span>
-              </Form.Group>
-            </Form>
-            <Signature />
+                </div>
+
+                <div className="d-flex justify-content-center">
+                  <div>
+                    <Col>
+                      <StyledButton onClick={submitForm} type="submit">
+                        Submit
+                      </StyledButton>
+                    </Col>
+                  </div>
+                </div>
+              </Form>
+            </div>
           </div>
-        </div>
-        <div className="d-flex justify-content-center">
-          {successForm ? (
-            <h5 className="text-success">visitation captured successfully!</h5>
-          ) : null}
-        </div>
-        <div className="d-flex justify-content-center">
-          <div>
-            <Col>
-              <StyledButton onClick={submitForm}>Submit</StyledButton>
-            </Col>
+        </Row>
+        <div className="mt-3">
+          <div className="d-flex justify-content-center mt-3"></div>
+          <div className="d-flex justify-content-center">
+            <Data />
           </div>
-        </div>
-      </Row>
-      <div className="mt-3">
-        <div className="d-flex justify-content-center mt-3"></div>
-        <div className="d-flex justify-content-center">
-          <Data />
         </div>
       </div>
+      <h5 className="d-flex justify-content-center text-danger">
+        Coded by @Gideon Kirimanjaro
+      </h5>
+      <h5 className="d-flex justify-content-center">All rights reserved</h5>
     </div>
   );
 }
